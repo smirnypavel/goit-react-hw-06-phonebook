@@ -1,38 +1,45 @@
+import { useDispatch } from 'react-redux';
+import { deleteContact } from 'redux/contactSlice';
 import React from 'react';
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { getContacts, getValueFilter } from 'redux/selector';
 import { TbTrash as TrashIcon } from 'react-icons/tb';
 import styled from './ContactList.module.css';
 
-const ContactList = ({ contacts, onDeleteContact }) => (
-  <ul className={styled.ul}>
-    {contacts.map(({ id, name, number }) => (
-      <li key={id} className={styled.li}>
-        <>
-          {name}
-          <br />
-          {number}
-        </>
-        <button
-          type="button"
-          onClick={() => onDeleteContact(id)}
-          className={styled.button}
-        >
-          <TrashIcon />
-        </button>
-      </li>
-    ))}
-  </ul>
-);
+const ContactList = () => {
+  const contontacts = useSelector(getContacts);
+  console.log(contontacts);
+  const Filter = useSelector(getValueFilter);
+  const dispatch = useDispatch();
+  const handleDelete = id => dispatch(deleteContact(id));
+  const visibleContacts =
+    contontacts &&
+    contontacts.filter(contact =>
+      contact.name.toLowerCase().includes(Filter.toLowerCase())
+    );
+  console.log(visibleContacts, 'привет');
 
-ContactList.propTypes = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    })
-  ).isRequired,
-  onDeleteContact: PropTypes.func.isRequired,
+  return (
+    <ul className={styled.ul}>
+      {contontacts &&
+        visibleContacts.map(({ id, name, number }) => (
+          <li key={id} className={styled.li}>
+            <>
+              {name}
+              <br />
+              {number}
+            </>
+            <button
+              type="button"
+              onClick={() => handleDelete(id)}
+              className={styled.button}
+            >
+              <TrashIcon />
+            </button>
+          </li>
+        ))}
+    </ul>
+  );
 };
 
 export default ContactList;
