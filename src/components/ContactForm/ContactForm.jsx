@@ -11,7 +11,6 @@ export const ContactForm = () => {
 
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-  console.log('contacts', contontacts);
   const handleChange = evt => {
     const { name, value } = evt.target;
     name === 'name' ? setName(value) : setNumber(value);
@@ -30,7 +29,7 @@ export const ContactForm = () => {
       setNumber('');
       return;
     }
-    dispatch(addContact({ name, number }));
+    dispatch(addContact(name, number));
     setName('');
     setNumber('');
   };
